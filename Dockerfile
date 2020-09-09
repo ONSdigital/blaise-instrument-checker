@@ -9,6 +9,7 @@ WORKDIR /deploy
 
 COPY requirements.txt requirements.txt
 
+RUN pip install --upgrade pip
 RUN pip install git+https://github.com/ONSdigital/pyblaise.git
 RUN pip install -r requirements.txt
 
