@@ -8,7 +8,7 @@ WORKDIR /deploy
 
 COPY requirements.txt requirements.txt
 
-RUN pip install git+https://github.com/ONSdigital/pyblaise.git
+RUN pip install git+git://github.com/ONSdigital/pyblaise.git
 RUN pip install -r requirements.txt
 
 COPY blaise_instrument_checker blaise_instrument_checker
