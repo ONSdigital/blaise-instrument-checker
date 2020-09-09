@@ -37,5 +37,6 @@ def check_instrument_on_blaise():
         print(f"get_list_of_instruments failed")
     return jsonify("false"), 500
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
