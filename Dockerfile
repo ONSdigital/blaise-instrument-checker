@@ -3,7 +3,7 @@ FROM eu.gcr.io/ons-blaise-dev/google-pubsub-alpine
 RUN apk update && \
     apk add gcc g++ && \
     mkdir -p /deploy \
-    && apt-get install -y git
+    && apk add git
 
 WORKDIR /deploy
 
