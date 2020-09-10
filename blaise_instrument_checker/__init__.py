@@ -32,7 +32,7 @@ def check_instrument_on_blaise():
                 date = dateutil.parser.parse(instrument['install-date'])
                 date_string = date.strftime("%H:%M %d/%m/%Y")
                 return jsonify(date_string)
-            return jsonify("Not found"), 404
+        return jsonify("Not found"), 404
     except TypeError as ex:
         print(f"get_list_of_instruments failed")
     return jsonify("false"), 500
