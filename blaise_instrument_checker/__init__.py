@@ -3,8 +3,8 @@ import os
 from flask import Flask, jsonify, request
 import dateutil.parser
 import logging
-# from .util.service_logging import log
-log = logging.getLogger(__name__)
+from .util.service_logging import log
+# log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
