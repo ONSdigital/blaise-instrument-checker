@@ -11,6 +11,11 @@ BLAISE_PASSWORD = os.getenv("BLAISE_PASSWORD", None)
 
 
 @app.route('/')
+def health_check():
+    return ":)", 200
+
+
+@app.route('/instrument')
 def check_instrument_on_blaise():
     host = request.args.get('vm_name', None, type=str)
     instrument_check = request.args.get('instrument', None, type=str)
