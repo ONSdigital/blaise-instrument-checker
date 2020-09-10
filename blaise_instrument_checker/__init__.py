@@ -1,11 +1,7 @@
 import pyblaise
 import os
 from flask import Flask, jsonify, request
-import dateutil.parser
-import logging
 from .util.service_logging import log
-# log = logging.getLogger(__name__)
-
 app = Flask(__name__)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
@@ -26,9 +22,6 @@ def check_instrument_on_blaise():
     log.info(f"Host : {host}")
     log.info(f"Instrument to check : {instrument_check}")
     log.info(f"PROTOCOL : {PROTOCOL}")
-    log.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
-    log.info(f"BLAISE_PASSWORD : {BLAISE_PASSWORD}")
-
     try:
         status, token = pyblaise.get_auth_token(PROTOCOL, host, 8031, BLAISE_USERNAME, BLAISE_PASSWORD)
         log.info(f"get_auth_token Status: {status}")
@@ -37,9 +30,7 @@ def check_instrument_on_blaise():
         for instrument in instruments:
             if instrument['name'] == instrument_check:
                 log.info(f"Found {instrument_check}")
-                date = dateutil.parser.parse(instrument['install-date'])
-                date_string = date.strftime("%H:%M %d/%m/%Y")
-                return jsonify(date_string)
+                return jsonify(instrument)
         return jsonify("Not found"), 404
     except TypeError as ex:
         log.error(f"get_list_of_instruments failed")
