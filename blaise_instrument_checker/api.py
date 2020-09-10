@@ -5,7 +5,6 @@ import logging
 from flask import Flask, jsonify, request
 
 import pyblaise
-import dateutil.parser
 
 app = Flask(__name__)
 
@@ -52,8 +51,6 @@ def check_instrument_on_blaise():
     for instrument in instruments:
         if instrument['name'] == instrument_check:
             app.logger.info(f"Found {instrument_check}")
-            date = dateutil.parser.parse(instrument['install-date'])
-            date_string = date.strftime("%H:%M %d/%m/%Y")
-            return jsonify(date_string)
+            return jsonify(instrument)
 
     return jsonify("Not found"), 404
