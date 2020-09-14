@@ -13,7 +13,7 @@ Url example
 /instrument?vm_name=tel-vm-url.co.uk&instrument=OPN2004A
 ```
 
-If found retuerned JSON example
+If instrument is found, returned JSON example
 ```.json
 {
     "id": "unique-uuid-0001",
