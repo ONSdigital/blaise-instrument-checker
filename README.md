@@ -1,4 +1,29 @@
 # Blaise Instrument Checker
+
+API layer built in flask to query Blaise using [pyblaise](https://github.com/ONSdigital/pyblaise).
+
+## Endpoints
+
+#### /instrument
+
+Check if instrument is available on Blaise instance
+
+Url example
+ ```.http request
+/instrument?vm_name=tel-vm-url.co.uk&instrument=OPN2004A
+```
+
+If found retuerned JSON example
+```.json
+{
+    "id": "unique-uuid-0001",
+    "install-date": "2020-09-11T09:51:00.1558289+01:00",
+    "name": "OPN2004A",
+    "server-park": "tel",
+    "status": "Active"
+}
+```
+
  
 ### Setup Development Environment 
 
@@ -59,3 +84,6 @@ To get BIC up and runnable from PyCharm, make sure you follow the commands above
     1. Set the working directory to the subdirectory to `blaise_instrument_checker` so it should be some like `path/to/project/blaise-instrument-checker/blaise_instrument_checker`
     1. Select Ok
 1. Select Run or Debug to get the application started
+
+
+[]: https://github.com/ONSdigital/pyblaise
