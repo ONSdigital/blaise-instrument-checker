@@ -34,7 +34,7 @@ steps:
         echo -n ${SHORT_SHA} >> bic.txt
         echo Copying file to ${_ENV} bucket.
         gsutil cp bsm.txt gs://ons-blaise-${_ENV}-image-tags/tags/bic.txt
-    
+
   - name: "gcr.io/cloud-builders/gcloud"
     id: Trigger Terraform Apply
     entrypoint: /bin/sh
