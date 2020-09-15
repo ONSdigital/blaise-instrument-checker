@@ -11,7 +11,7 @@ app = Flask(__name__)
 g = GCPHandler(app, parentLogName="request",
     childLogName="application",
     traceHeaderName='X-Cloud-Trace-Context',
-    labels= {'foo': 'bar', 'baz': 'qux'},
+    # labels= {'foo': 'bar', 'baz': 'qux'},
     resource= {
               "type": "gce_instance"
     })
