@@ -54,7 +54,7 @@ class LoggerConfig:
             'gcp': {
                 'level': 'INFO',
                 'formatter': 'short',
-                'class': 'main.GCPHandler',
+                'class': 'api.GCPHandler',
                 'logName': 'child'
             },
             'debug': {
