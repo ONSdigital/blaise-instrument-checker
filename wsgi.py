@@ -1,3 +1,5 @@
+import sys
+
 from blaise_instrument_checker import app
 from logging.config import dictConfig
 
@@ -9,7 +11,7 @@ dictConfig({
     }},
     'handlers': {'wsgi': {
         'class': 'logging.StreamHandler',
-        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'stream': sys.stdout,
         'formatter': 'default'
     }},
     'root': {
