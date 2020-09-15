@@ -6,10 +6,10 @@ import pyblaise
 
 app = Flask(__name__)
 
-app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-handler = logging.StreamHandler(sys.stdout)
+# app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+# handler = logging.StreamHandler(sys.stdout)
 # handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-app.logger.addHandler(handler)
+# app.logger.addHandler(handler)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
 BLAISE_USERNAME = os.getenv("BLAISE_USERNAME", None)
