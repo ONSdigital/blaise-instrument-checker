@@ -4,6 +4,7 @@ import logging
 from flask import Flask, jsonify, request
 import pyblaise
 from flask_gcp_log_groups import GCPHandler
+
 app = Flask(__name__)
 
 
