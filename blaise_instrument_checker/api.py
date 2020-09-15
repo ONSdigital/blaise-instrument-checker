@@ -3,8 +3,22 @@ import sys
 import logging
 from flask import Flask, jsonify, request
 import pyblaise
-
+from flask_gcp_log_groups import GCPHandler
 app = Flask(__name__)
+
+
+g = GCPHandler(app, parentLogName="request",
+    childLogName="application",
+    traceHeaderName='X-Cloud-Trace-Context',
+    labels= {'foo': 'bar', 'baz': 'qux'},
+    resource= {
+              "type": "gce_instance",
+              "labels": { "instance_id": "5160310737730769780",
+                          "zone": "europe-west2"
+                        }
+    })
+g.setLevel(logging.INFO)
+app.logger.addHandler(g)
 
 # app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
 # handler = logging.StreamHandler(sys.stdout)
