@@ -2,8 +2,9 @@ import os
 import time
 
 import pyblaise
-from flask import Flask, jsonify, request, Request
+from flask import Flask, jsonify, request, g
 from google.cloud import logging as gcplogging
+from werkzeug.wrappers import Request
 
 # app = Flask(__name__)
 
