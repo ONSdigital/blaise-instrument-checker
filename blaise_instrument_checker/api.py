@@ -14,9 +14,11 @@ log_format = logging.Formatter(
     '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
 )
 
-
-default_handler.setFormatter(log_format)
-app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+# app.logger.removeHandler(default_handler)
+# default_handler.setFormatter(log_format)
+#
+#
+# # app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
 # handler = logging.StreamHandler(sys.stdout)
 # handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
 # handler.setFormatter(log_format)
@@ -38,6 +40,7 @@ def check_instrument_on_blaise():
     host = request.args.get('vm_name', None, type=str)
     instrument_check = request.args.get('instrument', None, type=str)
 
+    app.logger.info("Hello")
     app.logger.info(f"Host : {host}")
     app.logger.info(f"Instrument to check : {instrument_check}")
     app.logger.info(f"PROTOCOL : {PROTOCOL}")
@@ -62,4 +65,5 @@ def check_instrument_on_blaise():
             app.logger.info(f"Found {instrument_check}")
             return jsonify(instrument)
 
+    app.logger.exception(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
     return jsonify("Not found"), 404
