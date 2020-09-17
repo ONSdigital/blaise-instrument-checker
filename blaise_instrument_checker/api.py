@@ -6,6 +6,7 @@ from flask import Flask, jsonify, request, g
 from flask.logging import default_handler
 # import logging
 # from pythonjsonlogger import jsonlogger
+import json_logging
 
 app = Flask(__name__)
 
