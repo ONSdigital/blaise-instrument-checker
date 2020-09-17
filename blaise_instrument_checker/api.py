@@ -66,5 +66,5 @@ def check_instrument_on_blaise():
             app.logger.info(f"Found {instrument_check}")
             return jsonify(instrument)
 
-    app.logger.exception(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+    app.logger.warning(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
     return jsonify("Not found"), 404
