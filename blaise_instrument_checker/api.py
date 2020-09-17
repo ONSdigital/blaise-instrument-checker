@@ -1,7 +1,6 @@
 import logging
 import os
 import sys
-from .util.service_logging import log
 import pyblaise
 from flask import Flask, jsonify, request, g
 from flask.logging import default_handler
@@ -11,20 +10,20 @@ from flask.logging import default_handler
 app = Flask(__name__)
 
 
-# log_format = logging.Formatter(
+# app.logger_format = app.loggerging.Formatter(
 #     '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
 # )
 #
-# logging.basicConfig(level=logging.DEBUG)
-# app.logger.removeHandler(default_handler)
-# default_handler.setFormatter(log_format)
+# app.logger.basicConfig(level=app.logger.DEBUG)
+# app.app.loggerger.removeHandler(default_handler)
+# default_handler.setFormatter(app.logger_format)
 #
 #
-# # app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-# handler = logging.StreamHandler(sys.stdout)
-# handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-# handler.setFormatter(log_format)
-# app.logger.addHandler(handler)
+# # app.app.loggerger.setLevel(os.getenv("app.logger_LEVEL", "WARN"))
+# handler = app.loggerging.StreamHandler(sys.stdout)
+# handler.setLevel(os.getenv("app.logger_LEVEL", "WARN"))
+# handler.setFormatter(app.logger_format)
+# app.app.loggerger.addHandler(handler)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
 BLAISE_USERNAME = os.getenv("BLAISE_USERNAME", None)
@@ -33,7 +32,7 @@ BLAISE_PASSWORD = os.getenv("BLAISE_PASSWORD", None)
 
 @app.route('/')
 def health_check():
-    app.logger.debug(f"health_check from {request.remote_addr}")
+    app.app.loggerger.debug(f"health_check from {request.remote_addr}")
     return ":)", 200
 
 
@@ -42,30 +41,30 @@ def check_instrument_on_blaise():
     host = request.args.get('vm_name', None, type=str)
     instrument_check = request.args.get('instrument', None, type=str)
 
-    log.info("Hello")
-    log.info(f"Host : {host}")
-    log.info(f"Instrument to check : {instrument_check}")
-    log.info(f"PROTOCOL : {PROTOCOL}")
-    log.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
+    app.logger.info("Hello")
+    app.logger.info(f"Host : {host}")
+    app.logger.info(f"Instrument to check : {instrument_check}")
+    app.logger.info(f"PROTOCOL : {PROTOCOL}")
+    app.logger.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
 
     try:
         status, token = pyblaise.get_auth_token(PROTOCOL, host, 8031, BLAISE_USERNAME, BLAISE_PASSWORD)
-        logging.debug(f"get_auth_token Status: {status}")
+        app.logger.debug(f"get_auth_token Status: {status}")
     except Exception as e:
-        log.exception(f"could not get authentication token from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+        app.logger.exception(f"could not get authentication token from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
         return jsonify("false"), 500
 
     try:
         status, instruments = pyblaise.get_list_of_instruments(PROTOCOL, host, 8031, token)
-        logging.info(f"get_list_of_instruments status: {status}")
+        app.logger.info(f"get_list_of_instruments status: {status}")
     except Exception as e:
-        log.exception(f"could not get list of instruments from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+        app.logger.exception(f"could not get list of instruments from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
         return jsonify("false"), 500
 
     for instrument in instruments:
         if instrument['name'] == instrument_check:
-            logging.info(f"Found {instrument_check}")
+            app.logger.info(f"Found {instrument_check}")
             return jsonify(instrument)
 
-    log.exception(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+    app.logger.exception(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
     return jsonify("Not found"), 404
