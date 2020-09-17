@@ -7,17 +7,42 @@ from flask.logging import default_handler
 # import logging
 from pythonjsonlogger import jsonlogger
 
-
-
 app = Flask(__name__)
 
-logging_format = formatter = jsonlogger.JsonFormatter(
-    fmt='%(asctime)s %(levelname)s %(name)s %(message)s'
+json_logging.init_flask(enable_json=True)
+json_logging.init_request_instrument(app)
+
+# init the logger as usual
+logger = logging.getLogger("test-logger")
+logger.setLevel(logging.DEBUG)
+# logger.addHandler(logging.StreamHandler(sys.stdout))
+# handler.setFormatter(logger_format2)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+
+
+# class CustomJsonFormatter(jsonlogger.JsonFormatter):
+#     def add_fields(self, log_record, record, message_dict):
+#         super(CustomJsonFormatter, self).add_fields(log_record, record, message_dict)
+#         if not log_record.get('timestamp'):
+#             record2 = record
+#             # this doesn't use record.created, so it is slightly off
+#             # now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+#             log_record['timestamp'] = record.asctime
+#         if log_record.get('level'):
+#             log_record['severity'] = log_record['level'].upper()
+#         else:
+#             log_record['severity'] = record.levelname
+
+
+
+
+logging_format = CustomJsonFormatter(
+    '(timestamp) (severity) (name) (message)'
 )
 
-# logger_format = logging.Formatter(
-#     '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
-# )
+logger_format2 = logging.Formatter(
+    '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
+)
 #
 # logging.basicConfig(level=logging.DEBUG)
 app.logger.removeHandler(default_handler)
@@ -25,11 +50,11 @@ app.logger.removeHandler(default_handler)
 
 #
 #
-app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-handler.setFormatter(logging_format)
-app.logger.addHandler(handler)
+# app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+# handler = logging.StreamHandler(sys.stdout)
+# handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+# handler.setFormatter(logger_format2)
+# app.logger.addHandler(handler)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
 BLAISE_USERNAME = os.getenv("BLAISE_USERNAME", None)
@@ -49,7 +74,7 @@ def check_instrument_on_blaise():
 
     app.logger.info("Hello")
     app.logger.info(f"Host : {host}")
-    app.logger.info(f"Instrument to check : {instrument_check}")
+    app.logger.info(f"Instrument to check : {instrument_check} ")
     app.logger.info(f"PROTOCOL : {PROTOCOL}")
     app.logger.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
 
@@ -73,4 +98,5 @@ def check_instrument_on_blaise():
             return jsonify(instrument)
 
     app.logger.error(f"could not instrument {instrument_check} on'{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+    correlation_id = json_logging.get_correlation_id()
     return jsonify("Not found"), 404
