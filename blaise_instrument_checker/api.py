@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 import pyblaise
 from flask import Flask, jsonify, request, g
@@ -6,10 +8,13 @@ from flask import Flask, jsonify, request, g
 app = Flask(__name__)
 
 
-# app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-# handler = logging.StreamHandler(sys.stdout)
-# handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
-# app.logger.addHandler(handler)
+app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+handler.setFormatter(logging.Formatter(
+    '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
+))
+app.logger.addHandler(handler)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
 BLAISE_USERNAME = os.getenv("BLAISE_USERNAME", None)
