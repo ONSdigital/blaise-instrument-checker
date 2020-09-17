@@ -5,25 +5,31 @@ import pyblaise
 from flask import Flask, jsonify, request, g
 from flask.logging import default_handler
 # import logging
+from pythonjsonlogger import jsonlogger
+
 
 
 app = Flask(__name__)
 
+logging_format = formatter = jsonlogger.JsonFormatter(
+    fmt='%(asctime)s %(levelname)s %(name)s %(message)s'
+)
 
-# app.logger_format = app.loggerging.Formatter(
+# logger_format = logging.Formatter(
 #     '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
 # )
 #
-# app.logger.basicConfig(level=app.logger.DEBUG)
-# app.app.loggerger.removeHandler(default_handler)
-# default_handler.setFormatter(app.logger_format)
+# logging.basicConfig(level=logging.DEBUG)
+app.logger.removeHandler(default_handler)
+# app.logger.setFormatter(logger_format)
+
 #
 #
-# # app.app.loggerger.setLevel(os.getenv("app.logger_LEVEL", "WARN"))
-# handler = app.loggerging.StreamHandler(sys.stdout)
-# handler.setLevel(os.getenv("app.logger_LEVEL", "WARN"))
-# handler.setFormatter(app.logger_format)
-# app.app.loggerger.addHandler(handler)
+app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
+handler.setFormatter(logging_format)
+app.logger.addHandler(handler)
 
 PROTOCOL = os.getenv("PROTOCOL", None)
 BLAISE_USERNAME = os.getenv("BLAISE_USERNAME", None)
@@ -66,5 +72,5 @@ def check_instrument_on_blaise():
             app.logger.info(f"Found {instrument_check}")
             return jsonify(instrument)
 
-    app.logger.warning(f"could find instrument '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+    app.logger.error(f"could not instrument {instrument_check} on'{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
     return jsonify("Not found"), 404
