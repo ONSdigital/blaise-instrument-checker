@@ -32,7 +32,7 @@ BLAISE_PASSWORD = os.getenv("BLAISE_PASSWORD", None)
 
 @app.route('/')
 def health_check():
-    app.app.loggerger.debug(f"health_check from {request.remote_addr}")
+    app.logger.debug(f"health_check from {request.remote_addr}")
     return ":)", 200
 
 
