@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from blaise_instrument_checker.util.service_logging import log
+from .util.service_logging import log
 import pyblaise
 from flask import Flask, jsonify, request, g
 from flask.logging import default_handler
