@@ -36,9 +36,9 @@ app.logger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 
-logging_format = CustomJsonFormatter(
-    '(timestamp) (severity) (name) (message)'
-)
+# logging_format = CustomJsonFormatter(
+#     '(timestamp) (severity) (name) (message)'
+# )
 
 logger_format2 = logging.Formatter(
     '{"timestamp": "%(asctime)s", "service": "blaise_instrument_checker",  "severity": "%(levelname)s", "module": "%(module)s" "message": "%(message)s"}'
