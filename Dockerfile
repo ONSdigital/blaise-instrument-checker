@@ -2,12 +2,15 @@ FROM eu.gcr.io/ons-blaise-dev/google-pubsub-alpine
 
 RUN apk update && \
     apk add gcc g++ && \
-    mkdir -p /deploy
+    mkdir -p /deploy \
+    && apk add git
 
 WORKDIR /deploy
 
 COPY requirements.txt requirements.txt
 
+RUN pip install --upgrade pip
+RUN pip install git+https://github.com/ONSdigital/pyblaise.git
 RUN pip install -r requirements.txt
 
 COPY blaise_instrument_checker blaise_instrument_checker
