@@ -3,6 +3,8 @@ import sys
 import logging
 from flask import Flask, jsonify, request
 import pyblaise
+from werkzeug import secure_filename
+from .get_manifest_id import get_manifest_id_from_zip
 
 app = Flask(__name__)
 
@@ -106,15 +108,17 @@ def get_all_users_on_blaise():
         return jsonify("false"), 500
 
 
-
 @app.route('/upload_survey', methods=["POST"])
 def upload_survey_blaise():
-    yeah = request.files['OPN200T.zip']
+    f = request.files['survey_file']
+    f.save(secure_filename(f.filename))
+
+    server_park = request.args.get('server_park', None, type=str)
     host = request.args.get('vm_name', None, type=str)
-    instrument_check = request.args.get('instrument', None, type=str)
+    survey_name = request.args.get('instrument', None, type=str)
+    survey_ID = get_manifest_id_from_zip("./" + f.filename)
 
     app.logger.info(f"Host : {host}")
-
     app.logger.info(f"PROTOCOL : {PROTOCOL}")
     app.logger.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
 
@@ -126,10 +130,10 @@ def upload_survey_blaise():
         return jsonify("false"), 500
 
     try:
-        new_survey_filename, survey_id = pyblaise.create_survey_from_existing(yeah, instrument_check)
-        status = pyblaise.upload_survey(PROTOCOL, host, 8031, token, new_survey_filename)
-        app.logger.info(f"get_all_users_on_blaise status: {status}")
+        app.logger.info(f"Uploading survey {survey_name} to {server_park} server park")
+        status = pyblaise.upload_survey(PROTOCOL, host, 8031, server_park, survey_name, survey_ID, token, "./" + f.filename)
+        app.logger.info(f"Uploaded survey status: {status}")
         return jsonify(status), 200
     except Exception as e:
-        app.logger.exception(f"could not get list of users from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+        app.logger.exception(f"could not upload survey {survey_name} from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
         return jsonify("false"), 500
