@@ -1,8 +1,8 @@
 FROM python:3.7-slim
 
-RUN apt-get --yes --force-yes update && \
+RUN apt-get --yes update && \
     mkdir -p /deploy \
-    && apt-get --yes --force-yes install git
+    && apt-get --yes install git
 
 WORKDIR /deploy
 
