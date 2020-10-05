@@ -4,7 +4,6 @@ import logging
 from flask import Flask, jsonify, request
 import pyblaise
 from werkzeug import secure_filename
-from .get_manifest_id import get_manifest_id_from_zip
 
 app = Flask(__name__)
 
@@ -116,7 +115,7 @@ def upload_survey_blaise():
     server_park = request.args.get('server_park', None, type=str)
     host = request.args.get('vm_name', None, type=str)
     survey_name = request.args.get('instrument', None, type=str)
-    survey_ID = get_manifest_id_from_zip("./" + f.filename)
+    survey_ID = pyblaise.get_manifest_id_from_zip("./" + f.filename)
 
     app.logger.info(f"Host : {host}")
     app.logger.info(f"PROTOCOL : {PROTOCOL}")
