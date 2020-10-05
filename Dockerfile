@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 RUN apt-get update && \
     mkdir -p /deploy \
-    && apt-get git
+    && apt-get install git
 
 WORKDIR /deploy
 
