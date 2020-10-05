@@ -1,6 +1,8 @@
 FROM python:3.7-slim
 
-RUN mkdir -p /deploy
+RUN apt-get update && \
+    mkdir -p /deploy \
+    && apt-get git
 
 WORKDIR /deploy
 
