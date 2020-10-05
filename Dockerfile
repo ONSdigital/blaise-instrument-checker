@@ -1,9 +1,6 @@
-FROM eu.gcr.io/ons-blaise-dev/google-pubsub-alpine
+FROM python:3.7-slim
 
-RUN apk update && \
-    apk add gcc g++ && \
-    mkdir -p /deploy \
-    && apk add git
+RUN mkdir -p /deploy
 
 WORKDIR /deploy
 
