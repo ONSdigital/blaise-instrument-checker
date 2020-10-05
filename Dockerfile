@@ -1,6 +1,6 @@
 FROM python:3.7-slim
 
-RUN apt-get --yes --force-yesupdate && \
+RUN apt-get --yes --force-yes update && \
     mkdir -p /deploy \
     && apt-get --yes --force-yes install git
 
