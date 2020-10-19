@@ -5,7 +5,6 @@ from flask import Flask, jsonify, request, g
 
 app = Flask(__name__)
 
-
 # app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
 # handler = logging.StreamHandler(sys.stdout)
 # handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
@@ -52,3 +51,29 @@ def check_instrument_on_blaise():
             return jsonify(instrument)
 
     return jsonify("Not found"), 404
+
+
+@app.route('/instruments')
+def get_all_instruments_on_blaise():
+    host = request.args.get('vm_name', None, type=str)
+    # instrument_check = request.args.get('instrument', None, type=str)
+
+    app.logger.info(f"Host : {host}")
+
+    app.logger.info(f"PROTOCOL : {PROTOCOL}")
+    app.logger.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
+
+    try:
+        status, token = pyblaise.get_auth_token(PROTOCOL, host, 8031, BLAISE_USERNAME, BLAISE_PASSWORD)
+        app.logger.debug(f"get_auth_token Status: {status}")
+    except Exception as e:
+        app.logger.exception(f"could not get authentication token from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+        return jsonify("false"), 500
+
+    try:
+        status, instruments = pyblaise.get_list_of_instruments(PROTOCOL, host, 8031, token)
+        app.logger.info(f"get_list_of_instruments status: {status}")
+        return jsonify(instruments), 200
+    except Exception as e:
+        app.logger.exception(f"could not get list of instruments from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
+        return jsonify("false"), 500
