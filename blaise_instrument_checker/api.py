@@ -21,7 +21,7 @@ def health_check():
     return ":)", 200
 
 
-@app.route('/instrument')
+@app.route('/api/instrument')
 def check_instrument_on_blaise():
     host = request.args.get('vm_name', None, type=str)
     instrument_check = request.args.get('instrument', None, type=str)
@@ -53,7 +53,7 @@ def check_instrument_on_blaise():
     return jsonify("Not found"), 404
 
 
-@app.route('/instruments')
+@app.route('/api/instruments')
 def get_all_instruments_on_blaise():
     host = request.args.get('vm_name', None, type=str)
     # instrument_check = request.args.get('instrument', None, type=str)
