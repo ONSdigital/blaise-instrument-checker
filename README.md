@@ -4,26 +4,6 @@ API layer built in flask to query Blaise using [pyblaise](https://github.com/ONS
 
 ## Endpoints
 
-#### /api/instrument
-
-Check if instrument is available on Blaise instance
-
-Url example
- ```.http request
-/api/instrument?vm_name=tel-vm-url.co.uk&instrument=OPN2004A
-```
-
-If instrument is found, returned JSON example
-```.json
-{
-    "id": "unique-uuid-0001",
-    "install-date": "2020-09-11T09:51:00.1558289+01:00",
-    "name": "OPN2004A",
-    "server-park": "tel",
-    "status": "Active"
-}
-```
-
 #### /api/instruments
 
 Returns a list of all Instruments installed on Blaise instance
