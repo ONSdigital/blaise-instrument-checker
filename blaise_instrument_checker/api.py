@@ -56,7 +56,6 @@ def check_instrument_on_blaise():
 @app.route('/api/instruments')
 def get_all_instruments_on_blaise():
     host = request.args.get('vm_name', None, type=str)
-    # instrument_check = request.args.get('instrument', None, type=str)
 
     app.logger.info(f"Host : {host}")
 
