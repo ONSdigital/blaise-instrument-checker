@@ -13,7 +13,7 @@ Url example
 /api/instruments?vm_name=tel-vm-url.co.uk
 ```
 
-If instrument is found, returned JSON example
+A json list is returned with all instrument details:
 ```.json
 [
   {
