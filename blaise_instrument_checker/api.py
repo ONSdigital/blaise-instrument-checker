@@ -5,7 +5,6 @@ from flask import Flask, jsonify, request, g
 
 app = Flask(__name__)
 
-
 # app.logger.setLevel(os.getenv("LOG_LEVEL", "WARN"))
 # handler = logging.StreamHandler(sys.stdout)
 # handler.setLevel(os.getenv("LOG_LEVEL", "WARN"))
@@ -22,33 +21,29 @@ def health_check():
     return ":)", 200
 
 
-@app.route('/instrument')
-def check_instrument_on_blaise():
-    host = request.args.get('vm_name', None, type=str)
-    instrument_check = request.args.get('instrument', None, type=str)
+@app.route('/api/instruments', methods=["GET"])
+def get_all_instruments_on_blaise():
+    BLAISE_HOST = request.args.get('vm_name', None, type=str)
 
-    app.logger.info(f"Host : {host}")
-    app.logger.info(f"Instrument to check : {instrument_check}")
+    app.logger.info(f"BLAISE_HOST : {BLAISE_HOST}")
     app.logger.info(f"PROTOCOL : {PROTOCOL}")
     app.logger.info(f"BLAISE_USERNAME : {BLAISE_USERNAME}")
 
     try:
-        status, token = pyblaise.get_auth_token(PROTOCOL, host, 8031, BLAISE_USERNAME, BLAISE_PASSWORD)
+        status, token = pyblaise.get_auth_token(PROTOCOL, BLAISE_HOST, 8031, BLAISE_USERNAME, BLAISE_PASSWORD)
         app.logger.debug(f"get_auth_token Status: {status}")
+        if status != 200:
+            return jsonify({"status": "error", "message": f"Could not get authentication token from blaise on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}'"}), 401
     except Exception as e:
-        app.logger.exception(f"could not get authentication token from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
-        return jsonify("false"), 500
+        app.logger.exception(f"Could not get authentication token from blaise on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}'")
+        return jsonify({"status": "error", "message": f"Could not get authentication token from blaise on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}'"}), 401
 
     try:
-        status, instruments = pyblaise.get_list_of_instruments(PROTOCOL, host, 8031, token)
+        status, instruments = pyblaise.get_list_of_instruments(PROTOCOL, BLAISE_HOST, 8031, token)
         app.logger.info(f"get_list_of_instruments status: {status}")
+        if status != 200:
+            return jsonify({"status": "error", "message": f"get list of instruments on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}' failed"}), status
+        return jsonify(instruments), 200
     except Exception as e:
-        app.logger.exception(f"could not get list of instruments from blaise on '{PROTOCOL}://{host}' as '{BLAISE_USERNAME}'")
-        return jsonify("false"), 500
-
-    for instrument in instruments:
-        if instrument['name'] == instrument_check:
-            app.logger.info(f"Found {instrument_check}")
-            return jsonify(instrument)
-
-    return jsonify("Not found"), 404
+        app.logger.exception(f"get list of instruments on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}' failed'")
+        return jsonify({"status": "error", "message": f"get list of instruments on '{PROTOCOL}://{BLAISE_HOST}' as '{BLAISE_USERNAME}' failed"}), status
